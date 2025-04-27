@@ -23,13 +23,17 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Divider
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -41,52 +45,51 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.google.firebase.auth.FirebaseAuth
 import com.st10345224.socialmediaapp.ui.theme.SocialMediaAppTheme
+import kotlinx.coroutines.delay
 
 class MainActivity : ComponentActivity() {
     private lateinit var auth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
+        //enableEdgeToEdge()
 
         setContent {
             SocialMediaAppTheme {
+                var isSplashScreenVisible by remember { mutableStateOf(true) }
+                var isRegistering by remember { mutableStateOf(false) } // Now starts with Login
+                var isLoggedIn by remember { mutableStateOf(false) }
+                val coroutineScope = rememberCoroutineScope()
 
-                var name by remember { mutableStateOf("")}
+                LaunchedEffect(key1 = true) {
+                    delay(3000) // Wait for 3 seconds
+                    isSplashScreenVisible = false // Hide the splash screen
+                }
 
-                var names by remember { mutableStateOf(listOf<String>())}
-
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(16.dp)
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = MaterialTheme.colorScheme.background
                 ) {
-                    Row(
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        OutlinedTextField(
-                            value = name,
-                            onValueChange = { text ->
-                                name = text
-                            },
-                            modifier = Modifier.weight(1f)
-                        )
-                        Spacer(modifier = Modifier.width(16.dp))
 
-                        Button(onClick = {
-                            if (name.isNotBlank()) {
-                                names = names + name
-                                name = ""
-                            }
 
-                        }) {
-                            Text(text = "Add")
+                    if (isSplashScreenVisible) {
+                        SplashScreen() // Now calling the SplashScreen composable from its own file
+                    } else if (isLoggedIn) {
+                        MainApp() // Navbar and main screen
+
+                    } else {
+                        if (isRegistering) {
+                            RegisterScreen(
+                                onNavigateToLogin = { isRegistering = false },
+                                onRegistrationSuccess = { isLoggedIn = true }
+                            )
+                        } else {
+                            LoginScreen(
+                                onNavigateToRegister = { isRegistering = true },
+                                onLoginSuccess = { isLoggedIn = true }
+                            )
                         }
-
                     }
-
-                    NameList(names = names)
-
                 }
             }
         }
@@ -94,28 +97,6 @@ class MainActivity : ComponentActivity() {
 
 }
 
-@Composable
-fun NameList(
-    names: List<String>,
-    modifier: Modifier = Modifier
-){
-    LazyColumn(modifier) {
-        items(names) { currentName ->
-            Text(text = currentName,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp)
-            )
-            HorizontalDivider()
-        }
-    }
-}
 
 
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    SocialMediaAppTheme {
 
-    }
-}
