@@ -22,19 +22,19 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 
-// 1. Define the Screen Data Class
+// Define the Screen Data Class
 data class Screen(val route: String, val title: String, val icon: ImageVector)
 
-// 2. Define the Screens
+// Define the Screens that can be navigated to
 val profileScreen = Screen("profile", "Profile", Icons.Filled.Person)
 val feedScreen = Screen("feed", "Feed", Icons.Filled.List)
 val settingsScreen = Screen("settings", "Settings", Icons.Filled.Settings)
 val newPostScreen = Screen("newPost", "New Post", Icons.Filled.Add)
 
-// 3. Create the List of Screens
+// Create the List of Screens
 val screens = listOf(profileScreen, feedScreen, newPostScreen, settingsScreen)
 
-// 4. Main App Composable with Navigation
+// Main App Composable with Navigation logic
 @Composable
 fun MainApp() {
     val navController = rememberNavController()
@@ -42,21 +42,21 @@ fun MainApp() {
     Scaffold(
         bottomBar = { BottomNavigationBar(navController = navController) }
     ) { paddingValues ->  // Use paddingValues here
-        // 5. Navigation Host
+        // Navigation Host
         NavHost(
             navController = navController,
-            startDestination = feedScreen.route,
+            startDestination = feedScreen.route, // Default destination
             modifier = Modifier.padding(paddingValues)  // Apply padding to NavHost
         ) {
             composable(route = profileScreen.route) { ProfileScreen() }
             composable(route = feedScreen.route) { FeedScreen() }
-            composable(route = settingsScreen.route) { SettingsScreen() }
+            composable(route = settingsScreen.route) { SettingsScreen() } // No settings screen yet, just placeholder
             composable(route = newPostScreen.route) {
-                // 6. Call CreatePostScreen and pass the callback
+                // Call CreatePostScreen and pass the callback
                 CreatePostScreen(onPostCreated = {
                     // Define what happens after a post is created
                     navController.navigate(feedScreen.route) { // Go back to feed
-                        popUpTo(feedScreen.route) { inclusive = true } // Remove feed screen from backstack
+                        popUpTo(newPostScreen.route) { inclusive = true } // Remove new post screen from backstack, otherwise it will stay open
                     }
                     // Optionally show a message
                     Toast.makeText(
@@ -70,7 +70,7 @@ fun MainApp() {
     }
 }
 
-// 6. Bottom Navigation Bar Composable
+// Bottom Navigation Bar Composable
 @Composable
 fun BottomNavigationBar(navController: NavHostController) {
     NavigationBar { // Use NavigationBar instead of BottomNavigation
@@ -98,7 +98,7 @@ fun BottomNavigationBar(navController: NavHostController) {
     }
 }
 
-// 7. Dummy Screen Composables
+// Screen Composables - put screen functions here
 @Composable
 fun ProfileScreen() {
     UserProfileScreen()
@@ -109,12 +109,8 @@ fun FeedScreen() {
     SocialMediaFeed()
 }
 
+// No settings screen yet, just displays message
 @Composable
 fun SettingsScreen() {
     Text("Settings Screen Content")
-}
-
-@Composable
-fun NewPostScreen() {
-    Text("New Post Screen Content")
 }

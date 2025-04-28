@@ -44,7 +44,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -287,7 +286,7 @@ fun UserProfileScreen() {
             )
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Edit/Save Button
+            // enable Edit/Save Button
             if (isEditing) {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -321,10 +320,4 @@ fun UserProfileScreen() {
             }
         }
     }
-}
-
-@Preview
-@Composable
-fun UserProfileScreenPreview() {
-    UserProfileScreen()
 }
