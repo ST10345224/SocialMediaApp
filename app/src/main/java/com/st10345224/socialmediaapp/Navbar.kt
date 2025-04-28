@@ -2,12 +2,11 @@ package com.st10345224.socialmediaapp
 
 import android.widget.Toast
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.List
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.List
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -15,14 +14,13 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 
 // 1. Define the Screen Data Class
 data class Screen(val route: String, val title: String, val icon: ImageVector)
@@ -53,7 +51,8 @@ fun MainApp() {
             composable(route = profileScreen.route) { ProfileScreen() }
             composable(route = feedScreen.route) { FeedScreen() }
             composable(route = settingsScreen.route) { SettingsScreen() }
-            composable(route = newPostScreen.route) { // 6. Call CreatePostScreen and pass the callback
+            composable(route = newPostScreen.route) {
+                // 6. Call CreatePostScreen and pass the callback
                 CreatePostScreen(onPostCreated = {
                     // Define what happens after a post is created
                     navController.navigate(feedScreen.route) { // Go back to feed
@@ -102,7 +101,7 @@ fun BottomNavigationBar(navController: NavHostController) {
 // 7. Dummy Screen Composables
 @Composable
 fun ProfileScreen() {
-    Text("Profile Screen Content")
+    UserProfileScreen()
 }
 
 @Composable
